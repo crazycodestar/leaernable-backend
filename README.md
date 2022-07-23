@@ -15,7 +15,7 @@ To start the project after cloning the repo and `npm install`. You should probab
 Then the startup commands are as follows
 
 ```bash
-tsc -w
+tsc --watch
 ```
 
 To compile the typescript files in the source folder and compile it to nodejs to a dist folder.
