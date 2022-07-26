@@ -1,17 +1,38 @@
 import express from "express";
 import cors from "cors";
+import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
 
+import auth from "./routes/auth";
+import user from "./routes/user";
+import prisma from "./config/prismaConfig";
+import redisClient from "./config/redisConfig";
+
+dotenv.config();
 const app = express();
-require("dotenv").config();
-
 const PORT = process.env.PORT || 8000;
 
-app.use(cors());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+redisClient.on("error", (err) => console.log("redis client error", err));
 
-app.get("^/$", (_, res) => {
-	res.send("Hello world");
-});
+const main = async () => {
+	await redisClient.connect();
 
-app.listen(PORT, () => console.log(`listening on port ${PORT}`));
+	app.use(cors());
+	app.use(express.urlencoded({ extended: true }));
+	app.use(express.json());
+	app.use(cookieParser());
+
+	app.use("/auth", auth);
+	app.use("/user", user);
+
+	app.listen(PORT, () => console.log(`listening on port ${PORT}`));
+};
+
+main()
+	.catch((e) => {
+		throw e;
+	})
+	.finally(async () => {
+		await prisma.$disconnect;
+	});
+// app.use("/users", )
