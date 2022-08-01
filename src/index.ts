@@ -3,16 +3,19 @@ import cors from "cors";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 
-import auth from "./routes/auth";
-import user from "./routes/user";
 import prisma from "./config/prismaConfig";
 import redisClient from "./config/redisConfig";
+import { PORT } from "./config/environment";
+// routes
+import auth from "./routes/auth";
+import user from "./routes/user";
+import thought from "./routes/thought";
 
 dotenv.config();
 const app = express();
-const PORT = process.env.PORT || 8000;
 
 redisClient.on("error", (err) => console.log("redis client error", err));
+// COMMENTS HERE
 
 const main = async () => {
 	await redisClient.connect();
@@ -24,6 +27,7 @@ const main = async () => {
 
 	app.use("/auth", auth);
 	app.use("/user", user);
+	app.use("/thought", thought);
 
 	app.listen(PORT, () => console.log(`listening on port ${PORT}`));
 };

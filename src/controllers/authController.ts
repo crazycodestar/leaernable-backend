@@ -14,7 +14,7 @@ import {
 dotenv.config();
 const refreshTokenSecret: Secret = process.env.REFRESH_TOKEN_SECRET!;
 
-type tokenObject = { username: string };
+type tokenObject = { id: number };
 
 const handleLogin = async (req: Request, res: Response) => {
 	const { username: userUnique, password } = req.body;
@@ -34,11 +34,11 @@ const handleLogin = async (req: Request, res: Response) => {
 	const match = await bcrypt.compare(password, user.password);
 	if (!match) return res.status(401).json("invalid username or password");
 
-	const accessToken = generateAccessToken(user.username);
-	const refreshToken = generateRefreshToken(user.username);
+	const accessToken = generateAccessToken(user.id);
+	const refreshToken = generateRefreshToken(user.id);
 
 	const expiresIn = 24 * 60 * 60;
-	redisClient.setEx(user.username, expiresIn, refreshToken);
+	redisClient.setEx(user.id.toString(), expiresIn, refreshToken);
 
 	res.cookie("jwt", refreshToken, {
 		httpOnly: true,
@@ -56,13 +56,13 @@ const handleRefreshToken = async (req: Request, res: Response) => {
 
 	try {
 		user = await jwt.verify(refreshToken, refreshTokenSecret);
-		const data = await redisClient.get((user as tokenObject).username);
+		const data = await redisClient.get((user as tokenObject).id.toString());
 		if (data !== refreshToken) return res.sendStatus(403);
 	} catch (err) {
 		return res.sendStatus(403);
 	}
 
-	const accessToken = generateAccessToken((user as tokenObject).username);
+	const accessToken = generateAccessToken((user as tokenObject).id);
 	return res.json({ accessToken });
 };
 
@@ -74,7 +74,7 @@ const handleLogout = async (req: Request, res: Response) => {
 
 	try {
 		const user = await jwt.verify(refreshToken, refreshTokenSecret);
-		if (user) await redisClient.del((user as tokenObject).username);
+		if (user) await redisClient.del((user as tokenObject).id.toString());
 		// clearr cookie
 		res.clearCookie("jwt", { httpOnly: true });
 	} catch (err) {
