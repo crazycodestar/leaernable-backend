@@ -1,12 +1,10 @@
 # RESTAPI typescript
 
-This is a nodejs base template that contains the base (boilerplate) for building REST apis with express and typescript.
+Pre-requisite to run this
 
-It also container all the potential packages that will be used in building out common features such as
-
-- Bcrypt
-- jsonwebtokens
-- dotenv
+- Running nodejs with version 14 or higher
+- npm version 8 or higher
+- local server of MySQL
 
 ## Startup
 
@@ -15,11 +13,18 @@ To start the project after cloning the repo and `npm install`. You should probab
 Then the startup commands are as follows
 
 ```bash
-tsc --watch
+> npm run dev # for testing purposes
+> npm start   # runs the production server
 ```
 
-To compile the typescript files in the source folder and compile it to nodejs to a dist folder.
+on Starting the server it will default to running on `port: 5000` to change this please set a `PORT` in a `.env` file in the root directory
 
-```bash
-npm run start // uses nodemon to run and compile the js files
-```
+Be sure to also set the values for all the other variables as provided in the `.env.example` file. These names should be expressive enough to understand.
+
+At this point everything should be running smoothly. Hopefully
+
+## API
+
+### Auth
+
+This backend uses a restful refresh token base api system to manage it's auth processes.
