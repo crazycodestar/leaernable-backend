@@ -28,3 +28,15 @@ At this point everything should be running smoothly. Hopefully
 ### Auth
 
 This backend uses a restful refresh token base api system to manage it's auth processes.
+
+| route         | Request type | input json                            | output json                                     |
+| ------------- | ------------ | ------------------------------------- | ----------------------------------------------- |
+| /auth/login   | POST         | { username: string password: string } | { accessToken: string } refreshToken(in cookie) |
+| /auth/refresh | POST         |                                       | { accessToken: string }                         |
+| /auth/logout  | POST         |                                       |                                                 |
+
+### user
+
+| route  | Request type | function      | input json                                          | output json |
+| ------ | ------------ | ------------- | --------------------------------------------------- | ----------- |
+| /auth/ | POST         | register user | { username: string email: string password: string } | { user }    |
