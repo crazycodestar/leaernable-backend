@@ -10,6 +10,7 @@ import { PORT } from "./config/environment";
 import auth from "./routes/auth";
 import user from "./routes/user";
 import thought from "./routes/thought";
+import { corsOptions } from "./config/corsConfig";
 
 dotenv.config();
 const app = express();
@@ -20,7 +21,7 @@ redisClient.on("error", (err) => console.log("redis client error", err));
 const main = async () => {
 	await redisClient.connect();
 
-	app.use(cors());
+	app.use(cors(corsOptions));
 	app.use(express.urlencoded({ extended: true }));
 	app.use(express.json());
 	app.use(cookieParser());
@@ -39,4 +40,3 @@ main()
 	.finally(async () => {
 		await prisma.$disconnect;
 	});
-// app.use("/users", )

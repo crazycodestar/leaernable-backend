@@ -1,11 +1,10 @@
 import { Request, Response } from "express";
 import bcrypt from "bcrypt";
-
 import { registerValidation } from "../validation/userValidation";
 import prisma from "../config/prismaConfig";
 import { Prisma } from "@prisma/client";
 
-const handleRegister = async (req: Request, res: Response) => {
+export const handleRegister = async (req: Request, res: Response) => {
 	// validation
 	const { username, email, password } = req.body;
 
@@ -40,4 +39,8 @@ const handleRegister = async (req: Request, res: Response) => {
 	}
 };
 
-export { handleRegister };
+export const emailVerification = async (req: Request, res: Response) => {
+	if (!req.user)
+		return res.status(400).json({ isSuccess: false, message: "unauthorised" });
+	const { id } = req.user;
+};
